@@ -88,14 +88,12 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
                     <a href="#" class="dropdown-toggle <?php echo (in_array($current_page, ['appointment_meeting.php', 'stud_verification.php'])) ? 'active' : ''; ?>"><img src="../student/images/todo.png"> To do</a>
                     <div class="dropdown-content" <?php echo (in_array($current_page, ['appointment_meeting.php', 'stud_verification.php'])) ? 'style="display: block;"' : ''; ?>>
                         <a href="appointment_meeting.php" class="<?php echo ($current_page == 'appointment_meeting.php') ? 'active' : ''; ?>"><img src="../student/images/search.png"> Appointment Meetings</a>
-                        <a href="stud_verification.php" class="<?php echo ($current_page == 'stud_verification.php') ? 'active' : ''; ?>"><img src="images/badge.png">Student's Verification</a>
-
+                        <a href="stud_verification.php" class="<?php echo ($current_page == 'stud_verification.php') ? 'active' : ''; ?>"><img src="images/badge.png"> Student's Verification</a>
                     </div>
                 </li>
-
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle <?php echo (in_array($current_page, ['Trainees.php', 'stud_endorsement_validation.php', 'internship_update.php', 'list_of_student_portfolio.php', 'coordinator_eval.php', 'list_coc.php'])) ? 'active' : '';?>">Students</a>
-                    <div class="dropdown-content <?php echo(in_array($current_page, ['Trainees.php', 'stud_endorsement_validation.php', 'internship_update.php', 'list_of_student_portfolio.php', 'coordinator_eval.php', 'list_coc.php'])) ? 'style="display: block;"' : '';?>">
+                    <div class="dropdown-content <?php echo (in_array($current_page, ['Trainees.php', 'stud_endorsement_validation.php', 'internship_update.php', 'list_of_student_portfolio.php', 'coordinator_eval.php', 'list_coc.php'])) ? 'style="display: block;"' : '';?>">
                         <a href="Trainees.php" class="<?php echo ($current_page == 'Trainees.php') ? 'active' : '';?>"> <img src="images/placeholder.png">Trainees</a>
                         <a href="stud_endorsement_validation.php" class="<?php echo ($current_page == 'stud_endorsement_validation.php') ? 'active' : '';?>"><img src="images/document.png">Endorsement Paper</a>
                         <a href="internship_update.php" class="<?php echo ($current_page == 'internship_update.php') ? 'active' : '';?>"><img src="../student/images/internship_docs.png">Internship Update</a>
@@ -103,22 +101,17 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
                         <a href="list_of_student_portfolio.php" class="<?php echo ($current_page == 'list_of_student_portfolio.php') ? 'active' : '';?>"><img src="../student/images/portfolio.png">Portfolio</a>
                         <a href="list_coc.php" class="<?php echo ($current_page == 'list_coc.php') ? 'active' : '';?>"><img src="../student/images/certificate.png">Certificate of Completion</a>
                     </div>
-                    
                 </li>
-
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle <?php echo (in_array($current_page, ['pre_internship_papers.php', 'working_stud_updates.php', 'working_stud_portfolio.php', 'list_of_working_students.php', 'working_stud_eval.php', 'working_stud_list_coc.php'])) ? 'active' : ''; ?>">Working Students</a>
                     <div class="dropdown-content" <?php echo (in_array($current_page, ['pre_internship_papers.php', 'working_stud_updates.php', 'working_stud_portfolio.php', 'list_of_working_students.php', 'working_stud_eval.php', 'working_stud_list_coc.php'])) ? 'style="display: block;"' : ''; ?>>
-                        <a href="list_of_working_students.php" class="<?php echo  ($current_page == 'list_of_working_students.php') ? 'active' : ''; ?>"> <img src="images/placeholder.png">Working Students</a>
-                        <a href="pre_internship_papers.php" class="<?php echo  ($current_page == 'pre_internship_papers.php') ? 'active' : ''; ?>"><img src="images/document.png">Pre-internship Paper</a>
-                        <!-- <a href="working_stud_eval.php" class="<?php echo ($current_page == 'working_stud_eval.php') ? 'active' : '';?>">Evaluation</a> -->
+                        <a href="list_of_working_students.php" class="<?php echo ($current_page == 'list_of_working_students.php') ? 'active' : ''; ?>"> <img src="images/placeholder.png">Working Students</a>
+                        <a href="pre_internship_papers.php" class="<?php echo ($current_page == 'pre_internship_papers.php') ? 'active' : ''; ?>"><img src="images/document.png">Pre-internship Paper</a>
                         <a href="working_stud_updates.php" class="<?php echo ($current_page == 'working_stud_updates.php') ? 'active' : ''; ?>"><img src="../student/images/internship_docs.png">Internship Update</a>
                         <a href="working_stud_portfolio.php" class="<?php echo ($current_page == 'working_stud_portfolio.php') ? 'active' : '';?>"><img src="../student/images/portfolio.png">Portfolio</a>
                         <a href="working_stud_list_coc.php" class="<?php echo ($current_page == 'working_stud_list_coc.php') ? 'active' : '';?>"><img src="../student/images/certificate.png">Certificate of Completion</a>
                     </div>
                 </li>
-
-
             </ul>
         </div>
     </div>
@@ -237,9 +230,30 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
         background-color: #700000;
     }
 
-    .sidenav a:hover img,
+    .sidenav .dropdown-content a.active {
+        color: #700000 !important; 
+        background-color: #fff;
+    }
+
+    .sidenav .dropdown-content a:active {
+        color: #700000 !important; 
+        background-color: #fff;
+    }
+
+    .sidenav a:hover img {
+        filter: brightness(0) invert(1);
+    }
+
     .sidenav a.active img {
         filter: brightness(0) invert(1);
+    }
+
+    .sidenav .dropdown-content a.active img {
+        filter: brightness(0.3) sepia(1) hue-rotate(-30deg) saturate(5); 
+    }
+
+    .sidenav .dropdown-content a:active img {
+        filter: brightness(0.3) sepia(1) hue-rotate(-30deg) saturate(5); 
     }
     
     .dropdown-toggle {
@@ -306,12 +320,6 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
     .dropdown-content a:hover {
         color: #f1f1f1;
         background-color: #700000;
-    }
-
-    .dropdown-content a:active,
-    .dropdown-content a.active {
-        background-color: #fff;
-        color: #000;
     }
 
     @media screen and (max-width: 768px) {

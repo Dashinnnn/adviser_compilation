@@ -173,7 +173,6 @@ if (isset($_GET['export']) && in_array($_GET['export'], ['excel', 'csv', 'pdf'])
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>OJT Web Portal</title>
-    <link rel="shortcut icon" href="images/Picture1.png">
     <link href="css/lib/font-awesome.min.css" rel="stylesheet">
     <link href="css/lib/themify-icons.css" rel="stylesheet">
     <link href="css/lib/bootstrap.min.css" rel="stylesheet">

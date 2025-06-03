@@ -45,8 +45,6 @@ if (!empty($secondAssignedSection)) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>OJT Web Portal: Internship Documentations</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="shortcut icon" href="images/Picture1.png">
         <link href="css/lib/font-awesome.min.css" rel="stylesheet">
         <link href="css/lib/menubar/sidebar.css" rel="stylesheet">
         <link href="css/lib/bootstrap.min.css" rel="stylesheet">
