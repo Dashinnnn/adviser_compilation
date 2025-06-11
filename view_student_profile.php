@@ -29,7 +29,8 @@ $stmt = $conn->prepare("
         CONCAT(coordinators_account.first_name, ' ', coordinators_account.middle_name, ' ', coordinators_account.last_name) AS ojt_adviser
     FROM students_data
     LEFT JOIN coordinators_account
-        ON students_data.stud_section = coordinators_account.assigned_section
+        ON students_data.stud_section = coordinators_account.assigned_section 
+        OR students_data.stud_section = coordinators_account.second_assigned_section
     WHERE students_data.student_ID = ?
 ");
 $stmt->execute([$studID]);
@@ -51,7 +52,6 @@ if (!$data) {
 
     <title>OJT Web Portal: Student Profile</title>
     <!-- ================= Favicon ================== -->
-    <link rel="shortcut icon" href="images/Picture1.png">
     
     <!-- Common -->
     <link href="css/lib/font-awesome.min.css" rel="stylesheet">

@@ -19,6 +19,8 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
 }
 ?>
 
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <nav class="nav-1">
     <img src="images/pupLogo.png" alt="PUP Logo" class="nav-logo">
     <div class="nav-title-caption-container">
@@ -42,19 +44,19 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
                     <ul>
                         <li>
                             <a href="#" onclick="profile();">
-                                <i class="ti-user"></i>
+                                <i class="material-icons dropdown-icon">person</i>
                                 <span>Profile</span>
                             </a>
                         </li>
                         <li>
                             <a href="#" onclick="settings();">
-                                <i class="ti-settings"></i>
+                                <i class="material-icons dropdown-icon">settings</i>
                                 <span>Setting</span>
                             </a>
                         </li>
                         <li>
                             <a href="#" onclick="logout();">
-                                <i class="ti-power-off"></i>
+                                <i class="material-icons dropdown-icon">logout</i>
                                 <span>Logout</span>
                             </a>
                         </li>
@@ -338,6 +340,41 @@ if (isset($_SESSION['auth_user']['coordinators_id']) && !empty($_SESSION['auth_u
             padding-top: 20px;
         }
     }
+
+    .dropdown-content-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .dropdown-content-body li {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-content-body a {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #000;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .dropdown-content-body a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown-content-body a:hover i.material-icons {
+            color: #000;
+        }
+
+        .dropdown-icon {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #000;
+        }
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

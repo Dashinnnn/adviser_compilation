@@ -25,7 +25,24 @@ if (!isset($_SESSION['auth_user']['coordinators_id'])) {
     <link href="css/style.css" rel="stylesheet">
     <link href="css/lib/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="endorsement-css/endorsement-moa.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+
+        .back-btn { 
+            border: none;
+            margin: 10px 10px 25px 0px;
+            font-size: 20px;
+            background-color: #fff;
+        }
+        .back-btn:hover { color: black; }
+        fieldset {
+            border: 2px solid #8B0000;
+            border-radius: 1.5rem;
+            padding: 10px 20px;
+            margin: 10px 20px;
+            flex: 2;
+        }
+
         .evaluation-container {
             display: flex;
             justify-content: space-between;
@@ -89,7 +106,9 @@ if (!isset($_SESSION['auth_user']['coordinators_id'])) {
 
     <div class="content-wrap" style="height: 80%; width: 100%; margin: 0 auto; position: relative;">
         <div style="background-color: white; margin-top: 6rem; margin-left: 16rem; padding: 2rem;">
-
+            <div class="back-btn" onclick="backBtn()">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </div>
         <div class="page-header">
             <div class="page-title">
                 <h1 style="font-size: 16px;"><b>Evaluation (Student)</b></h1>
@@ -147,6 +166,12 @@ if (!isset($_SESSION['auth_user']['coordinators_id'])) {
     <script src="js/scripts.js"></script>
     <script src="js/lib/sweetalert/sweetalert.min.js"></script>
     <script src="js/lib/sweetalert/sweetalert.init.js"></script>
+
+    <script>
+        function backBtn() {
+            window.history.back
+        }
+    </script>
 
     <?php
     if (isset($_SESSION['status']) && $_SESSION['status'] != '') {

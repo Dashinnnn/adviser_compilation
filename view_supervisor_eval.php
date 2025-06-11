@@ -47,10 +47,10 @@ try {
         LIMIT 1
     ");
     $stmt->execute([$student_id]);
-    $eval_hte = $stmt->fetch(PDO::FETCH_ASSOC);
+    $eval_supervisor = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("MOA fetch error: " . $e->getMessage());
-    $eval_hte = null;
+    error_log("Supervisor Evaluation fetch error: " . $e->getMessage());
+    $eval_supervisor = null;
 }
 ?>
 
@@ -59,14 +59,13 @@ try {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OJT Web Portal: MOA Review</title>
-    <link rel="shortcut icon" href="images/Picture1.png">
+    <title>OJT Web Portal: Training Supervisor Evaluation Review</title>
     <link href="css/lib/font-awesome.min.css" rel="stylesheet">
     <link href="css/lib/themify-icons.css" rel="stylesheet">
     <link href="css/lib/bootstrap.min.css" rel="stylesheet">
     <link href="css/lib/helper.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/lib/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .back-btn { 
@@ -186,7 +185,6 @@ try {
             border-radius: .3rem;
             padding: 8px 10px 8px 10px;
         }
-
         .moa-preview.enlarged {
             position: fixed;
             top: 55%;
@@ -211,6 +209,90 @@ try {
         .overlay.active {
             display: block;
         }
+
+        /* SweetAlert2 Custom Styling */
+        .swal2-popup, 
+        .swal-custom-popup {
+            border-radius: 40px !important;
+            padding: 80px 30px 40px 30px !important;
+            background-color: #700000 !important;
+            position: relative;
+            border: 2px solid rgba(255, 193, 7, 0.3) !important;
+        }
+        .swal2-icon, 
+        .swal-custom-icon {
+            position: absolute !important;
+            left: 50% !important;
+            top: 35px !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            z-index: 2 !important;
+            background-color: #700000 !important;
+            border: 3px solid #ffc107 !important;
+            color: #ffc107 !important;
+            animation: pulse 1.5s infinite !important;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+        .swal2-icon.swal2-warning .swal2-icon-content {
+            color: #ffc107 !important;
+        }
+        .swal2-icon.swal2-warning {
+            margin-top: -20px !important;
+        }
+        .swal-confirm-proceed,
+        .swal-cancel-proceed {
+            background-color: rgb(255, 255, 255) !important;
+            color: #000000 !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 10px 25px !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
+            margin: 0 5px !important;
+        }
+        .swal-confirm-proceed:hover, 
+        .swal-cancel-proceed:hover {
+            background-color: #ffc107 !important;
+            color: #700000 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+        }
+        .swal-text-white {
+            color: #fff !important;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .title-color {
+            color: #ffc107 !important;
+            font-size: 24px !important;
+            font-weight: 600 !important;
+            margin-bottom: 15px !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .swal-html-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-right: -5px;
+        }
+        .swal-html-container::-webkit-scrollbar{
+            width: 6px;  
+        }
+        .swal-html-container::-webkit-scrollbar-track{
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        .swal-html-container::-webkit-scrollbar-thumb{
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;  
+        }
+        .swal-html-container::-webkit-scrollbar-thumb:hover{
+            background: rgba(255, 193, 7, 0.5);  
+        }
     </style>
 </head>
 <body>
@@ -218,27 +300,27 @@ try {
     <div class="content-wrap" style="height: 80%; width: 100%; margin: 0 auto;">
         <div style="background-color: white; margin-top: 6rem; margin-left: 16rem; padding: 2rem;">
             <div class="back-btn" onclick="backBtn()">
-            <i class="fa-solid fa-arrow-left"></i> Back
+                <i class="fa-solid fa-arrow-left"></i> Back
             </div>
             <div class="content-holder">
                 <div class="file-overview-holder">
                     <fieldset>
                         <legend>Training Supervisor Evaluation</legend>
                         <div class="overview-cont">
-                            <?php if ($eval_hte): ?>
+                            <?php if ($eval_supervisor): ?>
                                 <div class="moa-preview" id="moaPreview">
                                     <?php
-                                    $file_ext = strtolower(pathinfo($eval_hte['uploaded_path'], PATHINFO_EXTENSION));
+                                    $file_ext = strtolower(pathinfo($eval_supervisor['uploaded_path'], PATHINFO_EXTENSION));
                                     if ($file_ext === 'pdf'): ?>
-                                        <iframe src="<?php echo $eval_hte['uploaded_path'] . '?t=' . time(); ?>" frameborder="0"></iframe>
+                                        <iframe src="<?php echo $eval_supervisor['uploaded_path'] . '?t=' . time(); ?>" frameborder="0"></iframe>
                                     <?php elseif (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                                        <img src="<?php echo $eval_hte['uploaded_path']; ?>" alt="MOA Image">
+                                        <img src="<?php echo $eval_supervisor['uploaded_path']; ?>" alt="MOA Image">
                                     <?php else: ?>
                                         <p class="no-file-message">Preview not available for this file type. Use the "View" button to open it.</p>
                                     <?php endif; ?>
                                 </div>
                             <?php else: ?>
-                                <p class="no-file-message">No MOA document has been submitted.</p>
+                                <p class="no-file-message">No Training Supervisor Evaluation document has been submitted.</p>
                             <?php endif; ?>
                         </div>
                     </fieldset>
@@ -271,14 +353,14 @@ try {
                             </div>
                         </div>
                         <div class="moa-overview">
-                            <?php if ($eval_hte): ?>
+                            <?php if ($eval_supervisor): ?>
                                 <div class="data-row">
                                     <div class="label"><p><b>File Name</b></p></div>
-                                    <div class="student-data">: <?php echo htmlspecialchars($eval_hte['document_name']); ?></div>
+                                    <div class="student-data">: <?php echo htmlspecialchars($eval_supervisor['document_name']); ?></div>
                                 </div>
                                 <div class="data-row">
                                     <div class="label"><p><b>Status</b></p></div>
-                                    <div class="student-data">: <?php echo htmlspecialchars(ucfirst($eval_hte['status'])); ?></div>
+                                    <div class="student-data">: <?php echo htmlspecialchars(ucfirst($eval_supervisor['status'])); ?></div>
                                 </div>
                             <?php else: ?>
                                 <div class="data-row">
@@ -293,13 +375,13 @@ try {
                         </div>
                     </div>
                     <div class="button-function">
-                        <button class="btn-style" onclick="viewMoa()" <?php echo $eval_hte ? '' : 'disabled'; ?>>
+                        <button class="btn-style" onclick="viewMoa()" <?php echo $eval_supervisor ? '' : 'disabled'; ?>>
                             <i class="fa-regular fa-eye"></i> View
                         </button>
-                        <button class="btn-style" onclick="updateStatus(<?php echo $eval_hte['document_id'] ?? 'null'; ?>, 'accepted')" <?php echo $eval_hte && $eval_hte['status'] !== 'accepted' ? '' : 'disabled'; ?>>
+                        <button class="btn-style" onclick="updateStatus(<?php echo $eval_supervisor['document_id'] ?? 'null'; ?>, 'accepted')" <?php echo $eval_supervisor && $eval_supervisor['status'] !== 'accepted' ? '' : 'disabled'; ?>>
                             <i class="fa-solid fa-circle-check"></i> Approve
                         </button>
-                        <button class="btn-style" onclick="toggleReject()" <?php echo $eval_hte && $eval_hte['status'] !== 'denied' ? '' : 'disabled'; ?>>
+                        <button class="btn-style" onclick="toggleReject()" <?php echo $eval_supervisor && $eval_supervisor['status'] !== 'denied' ? '' : 'disabled'; ?>>
                             <i class="fa-solid fa-square-xmark"></i> Reject
                         </button>
                     </div>
@@ -313,111 +395,194 @@ try {
             </div>
         </div>
     </div>
-
     <div class="overlay" id="overlay"></div>
-
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="js/lib/jquery.nanoscroller.min.js"></script>
     <script src="js/lib/menubar/sidebar.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
-    <script src="js/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function backBtn() {
             window.history.back();
         }
-
         function viewMoa() {
-            <?php if ($eval_hte): ?>
+            <?php if ($eval_supervisor): ?>
                 const fileExt = '<?php echo $file_ext; ?>';
                 const moaPreview = document.getElementById('moaPreview');
                 const overlay = document.getElementById('overlay');
-
                 if (fileExt === 'pdf') {
                     moaPreview.classList.toggle('enlarged');
                     overlay.classList.toggle('active');
                 } else {
-                    swal("Notice", "Preview not available for this file type.", "info");
+                    showCustomAlert({
+                        title: 'Notice',
+                        html: 'Preview not available for this file type.',
+                        icon: 'info',
+                        confirmText: 'OK'
+                    });
                 }
             <?php else: ?>
-                swal("Notice", "No MOA document available to view.", "info");
+                showCustomAlert({
+                    title: 'Notice',
+                    html: 'No Training Supervisor Evaluation document available to view.',
+                    icon: 'info',
+                    confirmText: 'OK'
+                });
             <?php endif; ?>
         }
-
         function updateStatus(documentId, status, remarks = null) {
             if (documentId === null) {
-                swal("Error", "No MOA document available to update.", "error");
+                showCustomAlert({
+                    title: 'Error',
+                    html: 'No Training Supervisor Evaluation document available to update.',
+                    icon: 'error',
+                    confirmText: 'OK'
+                });
                 return;
             }
-            swal({
-                title: `Are you sure?`,
-                text: `You are about to mark this MOA as ${status}.`,
-                type: "warning",
+            showCustomAlert({
+                title: 'Confirm',
+                html: `You are about to mark this Training Supervisor Evaluation as <strong>${status}</strong>.`,
                 showCancelButton: true,
-                confirmButtonColor: status === 'accepted' ? "#5cb85c" : "#d9534f",
-                confirmButtonText: `Yes, ${status} it`,
-                closeOnConfirm: false
-            }, function() {
-                $.post('update_status.php', { 
-                    document_id: documentId, 
-                    status: status, 
-                    remarks: remarks 
-                }, function(response) {
-                    if (response.message && response.message.includes("updated")) {
-                        if (status === 'accepted') {
-                            swal("Success", "You approved <?php echo addslashes(trim("$firstName $middleInitial $lastName")); ?>'s work", "success");
+                confirmText: `Yes, ${status} it`,
+                cancelText: 'Cancel',
+                icon: 'warning',
+                onConfirm: () => {
+                    $.post('update_status.php', { 
+                        document_id: documentId, 
+                        status: status, 
+                        remarks: remarks 
+                    }, function(response) {
+                        if (response.message && response.message.includes("updated")) {
+                            if (status === 'accepted') {
+                                showCustomAlert({
+                                    title: 'Success',
+                                    html: `You approved ${<?php echo json_encode(trim("$firstName $middleInitial $lastName")); ?>}'s work`,
+                                    icon: 'success',
+                                    confirmText: 'OK',
+                                    onConfirm: () => location.reload()
+                                });
+                            } else {
+                                showCustomAlert({
+                                    title: 'Success',
+                                    html: response.message,
+                                    icon: 'success',
+                                    confirmText: 'OK',
+                                    onConfirm: () => location.reload()
+                                });
+                            }
                         } else {
-                            swal("Success", response.message, "success");
+                            showCustomAlert({
+                                title: 'Error',
+                                html: response.message || 'Unknown error occurred.',
+                                icon: 'error',
+                                confirmText: 'OK'
+                            });
                         }
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        swal("Error", response.message || "Unknown error occurred.", "error");
-                    }
-                }, 'json').fail(function() {
-                    swal("Error", "Failed to update status.", "error");
-                });
+                    }, 'json').fail(function() {
+                        showCustomAlert({
+                            title: 'Error',
+                            html: 'Failed to update status.',
+                            icon: 'error',
+                            confirmText: 'OK'
+                        });
+                    });
+                }
             });
         }
-
         let rejectValue = false;
-
         function toggleReject() {
             rejectValue = !rejectValue;
-
             const remarksField = document.getElementById("remarks");
             const remarksBtn = document.getElementById("remarks-btn");
-
             remarksField.style.display = rejectValue ? "block" : "none";
             remarksBtn.style.display = rejectValue ? "block" : "none";
         }
-
         document.addEventListener('DOMContentLoaded', function() {
             const remarksField = document.getElementById("remarks");
             const remarksBtn = document.getElementById("remarks-btn");
             const overlay = document.getElementById('overlay');
-
             remarksField.style.display = "none";
             remarksBtn.style.display = "none";
-
             remarksBtn.addEventListener('click', function() {
-                const documentId = <?php echo $eval_hte['document_id'] ?? 'null'; ?>;
+                const documentId = <?php echo $eval_supervisor['document_id'] ?? 'null'; ?>;
                 const remarks = remarksField.value.trim();
-
                 if (!remarks) {
-                    swal("Error", "Please enter remarks before submitting.", "error");
+                    showCustomAlert({
+                        title: 'Error',
+                        html: 'Please enter remarks before submitting.',
+                        icon: 'error',
+                        confirmText: 'OK'
+                    });
                     return;
                 }
-
                 updateStatus(documentId, 'denied', remarks);
             });
-
-            
             overlay.addEventListener('click', function() {
                 const moaPreview = document.getElementById('moaPreview');
                 moaPreview.classList.remove('enlarged');
                 overlay.classList.remove('active');
             });
         });
+        function showCustomAlert(options) {
+            const defaultOptions = {
+                title: 'Alert',
+                html: '',
+                confirmText: 'OK',
+                cancelText: 'Cancel',
+                onConfirm: () => {},
+                onCancel: () => {},
+                showCancelButton: false,
+                icon: 'warning'
+            };
+            const config = { ...defaultOptions, ...options };
+            const contentLength = config.html.length;
+            const popupClass = contentLength > 100 ? 'swal-custom-popup swal-large-content' : 'swal-custom-popup';
+            const swalOptions = {
+                title: config.title,
+                html: `<div class="swal-text-white">${config.html}</div>`,
+                icon: config.icon,
+                showCancelButton: config.showCancelButton,
+                confirmButtonText: config.confirmText,
+                cancelButtonText: config.cancelText,
+                width: contentLength > 100 ? '600px' : '500px',
+                customClass: {
+                    popup: popupClass,
+                    icon: 'swal-custom-icon',
+                    title: 'title-color',
+                    confirmButton: 'swal-confirm-proceed',
+                    cancelButton: 'swal-cancel-proceed',
+                    htmlContainer: 'swal-html-container'
+                },
+                didOpen: () => {
+                    const container = document.querySelector('.swal-html-container');
+                    if (container && container.scrollHeight > 300) {
+                        container.style.maxHeight = '400px';
+                        container.style.overflowY = 'auto';
+                        container.style.padding = '0 10px 0 0';
+                        container.style.marginRight = '-10px';
+                    }
+                },
+                willClose: () => {
+                    const container = document.querySelector('.swal-html-container');
+                    if (container) {
+                        container.style.maxHeight = '';
+                        container.style.overflowY = '';
+                        container.style.padding = '';
+                        container.style.marginRight = '';
+                    }
+                }
+            };
+            return Swal.fire(swalOptions).then((result) => {
+                if (result.isConfirmed && typeof config.onConfirm === 'function') {
+                    config.onConfirm();
+                } else if (result.dismiss === Swal.DismissReason.cancel && typeof config.onCancel === 'function') {
+                    config.onCancel();
+                }
+                return result;
+            });
+        }
     </script>
 </body>
 </html>

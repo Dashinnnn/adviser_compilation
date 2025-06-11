@@ -27,7 +27,6 @@ if (!$data) {
 $stmt = $conn->prepare("SELECT * FROM stud_daily_time_records WHERE stud_id = ?");
 $stmt->execute([$studID]);
 $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +36,6 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>OJT Web Portal: Student Profile</title>
-    <link rel="shortcut icon" href="images/Picture1.png">
     <link href="css/lib/font-awesome.min.css" rel="stylesheet">
     <link href="css/lib/themify-icons.css" rel="stylesheet">
     <link href="css/lib/menubar/sidebar.css" rel="stylesheet">
@@ -45,7 +43,7 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="css/lib/helper.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="css/lib/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
         .back-btn {
             border: none;
@@ -214,7 +212,7 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid # intimidatingccc;
+            border: 1px solid #ccc;
             background-color: #f9f9f9;
             color: #700000;
             font-size: 16px;
@@ -296,6 +294,103 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border: 2px solid #8B0000;
             border-radius: .3rem;
             padding: 8px 10px 8px 10px;
+        }
+
+        /* SweetAlert2 Custom Styling */
+        .swal2-popup, 
+        .swal-custom-popup {
+            border-radius: 40px !important;
+            padding: 80px 30px 40px 30px !important;
+            background-color: #700000 !important;
+            position: relative;
+            border: 2px solid rgba(255, 193, 7, 0.3) !important;
+        }
+
+        .swal2-icon, 
+        .swal-custom-icon {
+            position: absolute !important;
+            left: 50% !important;
+            top: 35px !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            z-index: 2 !important;
+            background-color: #700000 !important;
+            border: 3px solid #ffc107 !important;
+            color: #ffc107 !important;
+            animation: pulse 1.5s infinite !important;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+
+        .swal2-icon.swal2-warning .swal2-icon-content {
+            color: #ffc107 !important;
+        }
+
+        .swal2-icon.swal2-warning {
+            margin-top: -20px !important;
+        }
+
+        .swal-confirm-proceed,
+        .swal-cancel-proceed {
+            background-color: rgb(255, 255, 255) !important;
+            color: #000000 !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 10px 25px !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
+            margin: 0 5px !important;
+        }
+
+        .swal-confirm-proceed:hover, 
+        .swal-cancel-proceed:hover {
+            background-color: #ffc107 !important;
+            color: #700000 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+        }
+
+        .swal-text-white {
+            color: #fff !important;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .title-color {
+            color: #ffc107 !important;
+            font-size: 24px !important;
+            font-weight: 600 !important;
+            margin-bottom: 15px !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .swal-html-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-right: -5px;
+        }
+
+        .swal-html-container::-webkit-scrollbar{
+            width: 6px;  
+        }
+
+        .swal-html-container::-webkit-scrollbar-track{
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .swal-html-container::-webkit-scrollbar-thumb{
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;  
+        }
+
+        .swal-html-container::-webkit-scrollbar-thumb:hover{
+            background: rgba(255, 193, 7, 0.5);  
         }
     </style>
 </head>
@@ -479,7 +574,7 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="js/lib/menubar/sidebar.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
-    <script src="js/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -598,38 +693,120 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
             remarksBtn.style.display = rejectValue ? "block" : "none";
         }
 
+        function showCustomAlert(options) {
+            const defaultOptions = {
+                title: 'Alert',
+                html: '',
+                confirmText: 'OK',
+                cancelText: 'Cancel',
+                onConfirm: () => console.log('Confirmed'),
+                onCancel: () => console.log('Canceled'),
+                showCancelButton: false,
+                icon: 'warning'
+            };
+
+            const config = { ...defaultOptions, ...options };
+            const contentLength = config.html.length;
+            const popupClass = contentLength > 100 ? 'swal-custom-popup swal-large-content' : 'swal-custom-popup';
+
+            const swalOptions = {
+                title: config.title,
+                html: `<div class="swal-text-white">${config.html}</div>`,
+                icon: config.icon,
+                showCancelButton: config.showCancelButton,
+                confirmButtonText: config.confirmText,
+                cancelButtonText: config.cancelText,
+                width: contentLength > 100 ? '600px' : '500px',
+                customClass: {
+                    popup: popupClass,
+                    icon: 'swal-custom-icon',
+                    title: 'title-color',
+                    confirmButton: 'swal-confirm-proceed',
+                    cancelButton: 'swal-cancel-proceed',
+                    htmlContainer: 'swal-html-container'
+                },
+                didOpen: () => {
+                    const container = document.querySelector('.swal-html-container');
+                    if (container && container.scrollHeight > 300) {
+                        container.style.maxHeight = '400px';
+                        container.style.overflowY = 'auto';
+                        container.style.padding = '0 10px 0 0';
+                        container.style.marginRight = '-10px';
+                    }
+                },
+                willClose: () => {
+                    const container = document.querySelector('.swal-html-container');
+                    if (container) {
+                        container.style.maxHeight = '';
+                        container.style.overflowY = '';
+                        container.style.padding = '';
+                        container.style.marginRight = '';
+                    }
+                }
+            };
+
+            return Swal.fire(swalOptions).then((result) => {
+                if (result.isConfirmed && typeof config.onConfirm === 'function') {
+                    config.onConfirm();
+                } else if (result.dismiss === Swal.DismissReason.cancel && typeof config.onCancel === 'function') {
+                    config.onCancel();
+                }
+                return result;
+            });
+        }
+
         function updateStatus(dtrId, status, remarks = null) {
             if (!dtrId) {
-                swal("Error", "No DTR record available to update.", "error");
+                showCustomAlert({
+                    title: 'Error',
+                    html: 'No DTR record available to update.',
+                    icon: 'error',
+                    confirmText: 'OK'
+                });
                 return;
             }
-            swal({
-                title: `Are you sure?`,
-                text: `You are about to mark this DTR as ${status}.`,
-                type: "warning",
+            showCustomAlert({
+                title: 'Confirm',
+                html: `You are about to mark this DTR as <strong>${status}</strong>.`,
                 showCancelButton: true,
-                confirmButtonColor: status === 'Accepted' ? "#5cb85c" : "#d9534f",
-                confirmButtonText: `Yes, ${status} it`,
-                closeOnConfirm: false
-            }, function() {
-                $.post('update_dtr_status.php', { 
-                    dtr_id: dtrId, 
-                    status: status, 
-                    remarks: remarks 
-                }, function(response) {
-                    if (response.message && response.message.includes("updated")) {
-                        if (status === 'Accepted') {
-                            swal("Success", "You approved <?php echo addslashes(trim($fullName)); ?>'s DTR", "success");
+                confirmText: `Yes, ${status} it`,
+                cancelText: 'Cancel',
+                icon: 'warning',
+                onConfirm: () => {
+                    $.post('update_dtr_status.php', {
+                        dtr_id: dtrId,
+                        status: status,
+                        remarks: remarks
+                    }, function(response) {
+                        if (response.message && response.message.includes("updated")) {
+                            const successMessage = status === 'Accepted'
+                                ? `You approved <?php echo addslashes(trim($fullName)); ?>'s DTR`
+                                : response.message;
+
+                            showCustomAlert({
+                                title: 'Success',
+                                html: successMessage,
+                                icon: 'success',
+                                confirmText: 'OK',
+                                onConfirm: () => location.reload()
+                            });
                         } else {
-                            swal("Success", response.message, "success");
+                            showCustomAlert({
+                                title: 'Error',
+                                html: response.message || "Unknown error occurred.",
+                                icon: 'error',
+                                confirmText: 'OK'
+                            });
                         }
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        swal("Error", response.message || "Unknown error occurred.", "error");
-                    }
-                }, 'json').fail(function() {
-                    swal("Error", "Failed to update status.", "error");
-                });
+                    }, 'json').fail(function() {
+                        showCustomAlert({
+                            title: 'Error',
+                            html: 'Failed to update status.',
+                            icon: 'error',
+                            confirmText: 'OK'
+                        });
+                    });
+                }
             });
         }
 
@@ -644,11 +821,26 @@ $dtr = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const remarks = remarksField.value.trim();
 
                 if (!remarks) {
-                    swal("Error", "Please enter remarks before submitting.", "error");
+                    showCustomAlert({
+                        title: 'Error',
+                        html: 'Please enter remarks before submitting.',
+                        icon: 'error',
+                        confirmText: 'OK'
+                    });
                     return;
                 }
 
-                updateStatus(currentDtrId, 'Denied', remarks);
+                showCustomAlert({
+                    title: 'Confirm Rejection',
+                    html: 'Are you sure you want to reject this submission?',
+                    showCancelButton: true,
+                    confirmText: 'OK',
+                    cancelText: 'Cancel',
+                    icon: 'warning',
+                    onConfirm: () => {
+                        updateStatus(currentDtrId, 'Denied', remarks);
+                    }
+                });
             });
         });
     </script>

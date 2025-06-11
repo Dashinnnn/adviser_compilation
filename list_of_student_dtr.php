@@ -2,7 +2,7 @@
 include '../connection/config.php';
 
 error_reporting(E_ALL);
-ini_set('display_errors', 1); // Keep enabled for debugging
+ini_set('display_errors', 1); 
 
 session_start();
 if ($_SESSION['auth_user']['coordinators_id'] == 0) {
@@ -45,10 +45,7 @@ if (!empty($secondAssignedSection)) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>OJT Web Portal: Internship Documentations</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="shortcut icon" href="images/Picture1.png">
         <!-- Favicon -->
-
         <link href="css/lib/font-awesome.min.css" rel="stylesheet">
         <!-- Common CSS -->
         <link href="css/lib/menubar/sidebar.css" rel="stylesheet">

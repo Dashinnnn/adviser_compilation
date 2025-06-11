@@ -154,7 +154,7 @@ require_once 'templates/coordinators_navbar.php';
                                             <img src="images/user.png" alt="Deplyoed icon">
                                         </div>
                                         <div>
-                                            <div>Deplyoed</div>
+                                            <div>Deployed</div>
                                             <?php
                                             $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
                                             $ojt_status = 'Deployed';

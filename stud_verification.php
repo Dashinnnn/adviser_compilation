@@ -169,8 +169,7 @@ if (isset($_GET['export'])) {
     <link href="css/lib/bootstrap.min.css" rel="stylesheet">
     <link href="css/lib/helper.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/lib/sweetalert/sweetalert.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .top-function { 
@@ -322,7 +321,6 @@ if (isset($_GET['export'])) {
             height: auto;
             border: 2px solid #8B0000;
             border-radius: 4px;
-
         }
         .close-btn {
             position: absolute;
@@ -331,6 +329,103 @@ if (isset($_GET['export'])) {
             font-size: 24px;
             color: #8B0000;
             cursor: pointer;
+        }
+
+        /* SweetAlert2 Custom Styling */
+        .swal2-popup, 
+        .swal-custom-popup {
+            border-radius: 40px !important;
+            padding: 80px 30px 40px 30px !important;
+            background-color: #700000 !important;
+            position: relative;
+            border: 2px solid rgba(255, 193, 7, 0.3) !important;
+        }
+
+        .swal2-icon, 
+        .swal-custom-icon {
+            position: absolute !important;
+            left: 50% !important;
+            top: 35px !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            z-index: 2 !important;
+            background-color: #700000 !important;
+            border: 3px solid #ffc107 !important;
+            color: #ffc107 !important;
+            animation: pulse 1.5s infinite !important;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+
+        .swal2-icon.swal2-warning .swal2-icon-content {
+            color: #ffc107 !important;
+        }
+
+        .swal2-icon.swal2-warning {
+            margin-top: -20px !important;
+        }
+
+        .swal-confirm-proceed,
+        .swal-cancel-proceed {
+            background-color: rgb(255, 255, 255) !important;
+            color: #000000 !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 10px 25px !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
+            margin: 0 5px !important;
+        }
+
+        .swal-confirm-proceed:hover, 
+        .swal-cancel-proceed:hover {
+            background-color: #ffc107 !important;
+            color: #700000 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+        }
+
+        .swal-text-white {
+            color: #fff !important;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .title-color {
+            color: #ffc107 !important;
+            font-size: 24px !important;
+            font-weight: 600 !important;
+            margin-bottom: 15px !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .swal-html-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-right: -5px;
+        }
+
+        .swal-html-container::-webkit-scrollbar{
+            width: 6px;  
+        }
+
+        .swal-html-container::-webkit-scrollbar-track{
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .swal-html-container::-webkit-scrollbar-thumb{
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;  
+        }
+
+        .swal-html-container::-webkit-scrollbar-thumb:hover{
+            background: rgba(255, 193, 7, 0.5);  
         }
     </style>  
 </head>
@@ -425,7 +520,7 @@ if (isset($_GET['export'])) {
     <script src="js/lib/menubar/sidebar.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
-    <script src="js/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -483,31 +578,113 @@ if (isset($_GET['export'])) {
 
         function updateStatus(studentId, status, studentName) {
             if (!studentId) {
-                swal("Error", "Invalid student ID.", "error");
+                showCustomAlert({
+                    title: 'Error',
+                    html: 'Invalid student ID.',
+                    icon: 'error',
+                    confirmText: 'OK'
+                });
                 return;
             }
-            swal({
-                title: `Are you sure?`,
-                text: `You are about to mark ${studentName}'s verification status as ${status}.`,
-                type: "warning",
+            showCustomAlert({
+                title: 'Confirm',
+                html: `You are about to mark ${studentName}'s verification status as <strong>${status}</strong>.`,
                 showCancelButton: true,
-                confirmButtonColor: status === 'accept' ? "#5cb85c" : "#d9534f",
-                confirmButtonText: `Yes, ${status} it`,
-                closeOnConfirm: false
-            }, function() {
-                $.post('update_verification_status.php', { 
-                    student_id: studentId, 
-                    status: status
-                }, function(response) {
-                    if (response.message && response.message.includes("updated")) {
-                        swal("Success", `${studentName}'s verification status updated to ${status}.`, "success");
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        swal("Error", response.message || "Unknown error occurred.", "error");
+                confirmText: `Yes, ${status} it`,
+                cancelText: 'Cancel',
+                icon: 'warning',
+                onConfirm: () => {
+                    $.post('update_verification_status.php', { 
+                        student_id: studentId, 
+                        status: status
+                    }, function(response) {
+                        if (response.message && response.message.includes("updated")) {
+                            showCustomAlert({
+                                title: 'Success',
+                                html: `${studentName}'s verification status updated to ${status}.`,
+                                icon: 'success',
+                                confirmText: 'OK',
+                                onConfirm: () => location.reload()
+                            });
+                        } else {
+                            showCustomAlert({
+                                title: 'Error',
+                                html: response.message || 'Unknown error occurred.',
+                                icon: 'error',
+                                confirmText: 'OK'
+                            });
+                        }
+                    }, 'json').fail(function() {
+                        showCustomAlert({
+                            title: 'Error',
+                            html: 'Failed to update status.',
+                            icon: 'error',
+                            confirmText: 'OK'
+                        });
+                    });
+                }
+            });
+        }
+
+        function showCustomAlert(options) {
+            const defaultOptions = {
+                title: 'Alert',
+                html: '',
+                confirmText: 'OK',
+                cancelText: 'Cancel',
+                onConfirm: () => console.log('Confirmed'),
+                onCancel: () => console.log('Canceled'),
+                showCancelButton: false,
+                icon: 'warning'
+            };
+
+            const config = { ...defaultOptions, ...options };
+            const contentLength = config.html.length;
+            const popupClass = contentLength > 100 ? 'swal-custom-popup swal-large-content' : 'swal-custom-popup';
+
+            const swalOptions = {
+                title: config.title,
+                html: `<div class="swal-text-white">${config.html}</div>`,
+                icon: config.icon,
+                showCancelButton: config.showCancelButton,
+                confirmButtonText: config.confirmText,
+                cancelButtonText: config.cancelText,
+                width: contentLength > 100 ? '600px' : '500px',
+                customClass: {
+                    popup: popupClass,
+                    icon: 'swal-custom-icon',
+                    title: 'title-color',
+                    confirmButton: 'swal-confirm-proceed',
+                    cancelButton: 'swal-cancel-proceed',
+                    htmlContainer: 'swal-html-container'
+                },
+                didOpen: () => {
+                    const container = document.querySelector('.swal-html-container');
+                    if (container && container.scrollHeight > 300) {
+                        container.style.maxHeight = '400px';
+                        container.style.overflowY = 'auto';
+                        container.style.padding = '0 10px 0 0';
+                        container.style.marginRight = '-10px';
                     }
-                }, 'json').fail(function() {
-                    swal("Error", "Failed to update status.", "error");
-                });
+                },
+                willClose: () => {
+                    const container = document.querySelector('.swal-html-container');
+                    if (container) {
+                        container.style.maxHeight = '';
+                        container.style.overflowY = '';
+                        container.style.padding = '';
+                        container.style.marginRight = '';
+                    }
+                }
+            };
+
+            return Swal.fire(swalOptions).then((result) => {
+                if (result.isConfirmed && typeof config.onConfirm === 'function') {
+                    config.onConfirm();
+                } else if (result.dismiss === Swal.DismissReason.cancel && typeof config.onCancel === 'function') {
+                    config.onCancel();
+                }
+                return result;
             });
         }
 

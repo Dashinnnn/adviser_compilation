@@ -91,7 +91,6 @@ $studentPrimaryId = $data['id'];
             width: 100px;
             height: 120px;
             margin-bottom: 15px;
-            background-color: white;
             padding: 5px;
             border-radius: 2px;
             display: flex;
@@ -160,21 +159,21 @@ $studentPrimaryId = $data['id'];
                     <!--Row 1 -->
                     <div class="document-card" onclick="window.location.href='view_company_id.php?id=<?php echo urlencode($studentPrimaryId);?>'">
                         <div class="document-icon">
-                        <img src="../student/templates/endorsement/moa.png" alt="MOA Document">
+                        <img src="../student/working_student/images/company_id.png" alt="company id icon" style="filter: brightness(0) invert(1);">
                         </div>
                         <div class="document-title">Comapany ID</div>
                     </div>  
                     
                     <div class="document-card" onclick="window.location.href='view_comp_profile.php?id=<?php echo urlencode($studentPrimaryId);?>'">
                         <div class="document-icon">
-                        <img src="../student/templates/endorsement/ia.png" alt="Internship Agreement">
+                        <img src="../student/working_student/images/hte-eval.png" alt="Internship Agreement" style="filter: brightness(0) invert(1);">
                         </div>
                         <div class="document-title">Company Profile</div>
                     </div>
 
                     <div class="document-card" onclick="window.location.href='view_contract_job_desc.php?id=<?php echo urlencode($studentPrimaryId);?>'">
                         <div class="document-icon">
-                            <img src="../student/templates/endorsement/consent_form.png" alt="Consent Form">
+                            <img src="../student/working_student/images/contract.png" alt="Consent Form" > 
                         </div>
                         <div class="document-title">Contract and Job Description</div>
                     </div>
@@ -183,7 +182,7 @@ $studentPrimaryId = $data['id'];
 
                     <div class="document-card" onclick="window.location.href='view_supervisor_details.php?id=<?php echo urlencode($studentPrimaryId);?>'">
                         <div class="document-icon">
-                            <img src="../student/templates/endorsement/intent_letter.png" alt="Intent Letter">
+                            <img src="../student/working_student/images/supervisor-icon.png" alt="Intent Letter" style="filter: brightness(0) invert(1);">
                         </div>
                         <div class="document-title">Supervisor Details</div>
                     </div>  
@@ -196,8 +195,8 @@ $studentPrimaryId = $data['id'];
                     </div>
 
                     <div class="document-card" onclick="window.location.href='view_coe.php?id=<?php echo urlencode($studentPrimaryId);?>'">
-                        <div class="document-icon-medical">
-                            <i class="fa-regular fa-file"></i>
+                        <div class="document-icon">
+                            <img src="../student/working_student/images/coe.png" alt="Certificate of Employment" style="filter: brightness(0) invert(1);">
                         </div>
                         <div class="document-title">Certificate of Employment</div>
                     </div>
@@ -205,9 +204,9 @@ $studentPrimaryId = $data['id'];
 
                     <div class="document-card" onclick="window.location.href='view_insurance.php?id=<?php echo urlencode($studentPrimaryId);?>'">
                         <div class="document-icon">
-                            <div style="font-size: 40px; font-weight: bold; color: #8B0000;">NDA</div>
+                            <img src="../student/working_student/images/contract.png" alt="Certificate of Employment" >
                         </div>
-                        <div class="document-title">Insurance</div>
+                         <div class="document-title">Insurance</div>
                     </div>  
                 </div>
         </fieldset>

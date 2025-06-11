@@ -9,24 +9,30 @@ if (!isset($_SESSION['auth_user']['coordinators_id'])) {
     die("Error: User is not authenticated.");
 }
 
-$studId = $_SESSION['auth_user']['coordinators_id'];
-$course = $_SESSION['auth_user']['student_course'];
+$coordinatorId = $_SESSION['auth_user']['coordinators_id'];
 
-if ($studId == 0) {
-    header("Location: index.php");
-    exit();
-}
-
-// Fetch active users
-$stmt = $conn->prepare("SELECT * FROM students_data WHERE id != ? AND stud_course = ?");
-$stmt->execute([$studId, $course]);
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Get current user's profile
-$sql = $conn->prepare("SELECT coordinators_profile_picture FROM coordinators_account WHERE id = ?");
-$sql->execute([$studId]);
+// Fetch current user's profile
+$sql = $conn->prepare("SELECT coordinators_profile_picture, first_name FROM coordinators_account WHERE id = ?");
+$sql->execute([$coordinatorId]);
 $row = $sql->fetch(PDO::FETCH_ASSOC);
-$currentImagePath = $row['coordinators_profile_picture'] ?? '';
+$currentImagePath = $row['coordinators_profile_picture'] ?? 'images/profile.png';
+$coordinatorName = $row['first_name'];
+
+// Fetch active students
+$stmt = $conn->prepare("SELECT id, uniqueID, first_name, last_name, profile_picture, online_offlineStatus FROM students_data WHERE verify_status = 'Verified'");
+$stmt->execute();
+$students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Handle message sending
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
+    $receiverId = $_POST['receiver_id'];
+    $message = $_POST['message'];
+    $date = date('Y-m-d');
+    $time = date('H:i:s');
+
+    $stmt = $conn->prepare("INSERT INTO chat_system (sender_id, receiver_id, messages, date_only, time_only, status) VALUES (?, ?, ?, ?, ?, 'Sent')");
+    $stmt->execute([$coordinatorId, $receiverId, $message, $date, $time]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,8 +44,7 @@ $currentImagePath = $row['coordinators_profile_picture'] ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>OJT Web Portal: Chats</title>
-    <!-- ================= Favicon ================== -->
-    <link rel="shortcut icon" href="images/Picture1.png">
+    <!-- ================= Favicon ================== -->   
     <link rel="apple-touch-icon" sizes="144x144" href="http://placehold.it/144.png/000/fff">
     <link rel="apple-touch-icon" sizes="114x114" href="http://placehold.it/114.png/000/fff">
     <link rel="apple-touch-icon" sizes="72x72" href="http://placehold.it/72.png/000/fff">
@@ -146,18 +151,18 @@ $currentImagePath = $row['coordinators_profile_picture'] ?? '';
         border: 2px solid #e0e0e0;
         background-color: #f8f8f8;
         display: flex;
-        align-items: center; /* Fixed from 'left' to 'center' */
+        align-items: center; 
         justify-content: center;
         overflow: hidden;
         border: 10px solid #D9D9D9;
-        box-sizing: border-box; /* Ensure border is included in dimensions */
+        box-sizing: border-box; 
     }
 
     .image-placeholder img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Ensure aspect ratio is maintained */
-        display: block; /* Remove any inline spacing */
+        object-fit: cover; 
+        display: block; 
     }
 
     .placeholder-icon {
@@ -514,238 +519,178 @@ $currentImagePath = $row['coordinators_profile_picture'] ?? '';
     .file-name {
         margin-top: 5px;
     }
+
+    .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        .message-item {
+            margin-bottom: 1rem;
+            max-width: 70%;
+        }
+        .sent {
+            background-color: #007bff;
+            color: white;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-left: auto;
+        }
+        .received {
+            background-color: #f1f3f5;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+        }
+        .resource-panel {
+            border-left: 1px solid #ddd;
+            padding: 1rem;
+        }
 </style>
 
 <body>
 <?php require_once 'templates/coordinators_navbar.php'; ?>
 
 <div class="content-wrap" style="width: 100%; margin: 0 auto;">
-    <div style="background-color: white; margin-top: 6rem; margin-left: 16rem; padding: 2rem;">
-        <div class="main-message-cont">
-            <div class="left-message">
-                <div class="page-title">
-                    <h6><b>MESSAGE</b></h6>
-                    <br><br>
-                    <div class="profile-image">
-                        <div class="image-placeholder">
-                            <img src="<?= $currentImagePath ?: 'images/placeholder.png' ?>" alt="Profile">
-                        </div>
-                        
-                        <h1>
-                            <b><?php echo $result['first_name'];?></b>
-                        </h1>
-                        <br>
-                        <div class="search-filter">
-                            <input type="text" placeholder="Search..." class="search">
-                        </div>
-                        <br>
-                        <div class="contacts">
-                            Contacts
-                        </div>
-                        <br>
-
-                        <div class="scrollable-cont">
-                            <div class="contacts-indiv">
-                                <div class="user-contact1">
-                                    <div class="profile1">
-                                        A
-                                    </div>
-                                    <div class="userData">
-                                        <div class="name">
-                                            <b>Alen Jeru Ganotice</b>
-                                        </div>
-                                        <div class="message">You: Good morning student!</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contacts-indiv">
-                                <div class="user-contact">
-                                    <div class="profile2">
-                                        W
-                                    </div>
-                                    <div class="userData">
-                                        <div class="name">
-                                            <b>warren Baugbog</b>
-                                        </div>
-                                        <div class="message">You: Good morning student!</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contacts-indiv">
-                                <div class="user-contact">
-                                    <div class="profile3">
-                                        B
-                                    </div>
-                                    <div class="userData">
-                                        <div class="name">
-                                            <b>Bryan Batumbakal</b>
-                                        </div>
-                                        <div class="message">You: Good morning student!</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contacts-indiv">
-                                <div class="user-contact">
-                                    <div class="profile4">
-                                        C
-                                    </div>
-                                    <div class="userData">
-                                        <div class="name">
-                                            <b>Chiana Karina</b>
-                                        </div>
-                                        <div class="message">You: Good morning student!</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contacts-indiv">
-                                <div class="user-contact">
-                                    <div class="profile5">
-                                        D
-                                    </div>
-                                    <div class="userData">
-                                        <div class="name">
-                                            <b>Danica Labanan</b>
-                                        </div>
-                                        <div class="message">You: Good morning student!</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div style="background-color: white; margin-top: 6rem; margin-left: 16rem; padding: 2rem; display: flex;">
+        <!-- Left Panel: Student List -->
+        <div class="left-panel" style="width: 30%; border-right: 1px solid #ddd; padding-right: 1rem;">
+            <h6><b>MESSAGE</b></h6>
+            <br>
+            <div class="search-filter">
+                <input type="text" id="searchStudent" placeholder="Search..." class="search">
             </div>
-
-            <div class="middle-message">
-                <div class="top-column">
-                    <div class="chat-pfp">
-                        A
-                    </div>
-                    <div class="chat-name">Alen Jeru Ganotice</div>
-                </div>
-
-                <div class="middle">
-                    <div class="middle-pfp">
-                        <div class="main-pfp">
-                            <h1>A</h1>
-                        </div>
-                            <div class="chat-name-in">
-                                Alen Jeru Ganotice
+            <br>
+            <div id="studentList">
+                <?php foreach ($students as $student): ?>
+                    <div class="contacts-indiv" onclick="loadChat('<?php echo $student['uniqueID']; ?>', '<?php echo $student['first_name'] . ' ' . $student['last_name']; ?>', '<?php echo $student['profile_picture']; ?>')">
+                        <div class="user-contact1">
+                            <div class="profile1" style="background-color: <?php echo $student['online_offlineStatus'] === 'Online' ? '#34ce57' : '#e4606d'; ?>">
+                                <?php echo strtoupper(substr($student['first_name'], 0, 1)); ?>
                             </div>
-                            <div class="title">
-                                PUP ITECH | STUDENT
+                            <div class="userData">
+                                <div class="name"><b><?php echo $student['first_name'] . ' ' . $student['last_name']; ?></b></div>
+                                <div class="message">Last message...</div>
                             </div>
-                    </div>
-
-                </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="chat-cont">
-                        <div class="chat-bubble">
-                            Good morning student!
                         </div>
                     </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="message-box">
-                        <div class="chat-message">
-                            <input type="text" class="chat-message-in" placeholder="Send a message...">
-                        </div>
-
-                        <button class="send">
-                            <b>Send</b>
-                        </button>
-                    </div>
+                <?php endforeach; ?>
             </div>
+        </div>
 
-            <div class="right-message">
-                <div class="content-holder">
-                 <div class="right-header">
-                    <h6><b>Files</b></h6>
-                </div>
+        <!-- Middle Panel: Chat Container -->
+        <div class="middle-panel" style="width: 40%; padding: 0 1rem;">
+            <div class="top-column" id="chatHeader" style="display: none;">
+                <div class="chat-pfp" id="chatPfp"></div>
+                <div class="chat-name" id="chatName"></div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="message-box">
+                <input type="text" id="messageInput" class="chat-message-in" placeholder="Send a message...">
+                <button class="send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
 
-                <div class="files-box">
-                    <div class="files">
-                        <i class="fa-solid fa-folder">
-                    </i></div>
-                    <div class="images">
-                        <i class="fa-solid fa-images"></i>
-                    </div>
-                </div>
-                <div class="line"><hr></div>
-                </div>
-
-                <div class="no-docs">No documents yet</div>
+        <!-- Right Panel: Resource Panel -->
+        <div class="resource-panel" style="width: 30%; padding-left: 1rem;">
+            <h6><b>Files</b></h6>
+            <div id="resourcePanel">
+                <p>No documents yet</p>
             </div>
         </div>
     </div>
 </div>
 
-<script src="js/lib/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-function loadConversation(receiverId) {
-    $('#documentSection').show();
-    
-    $('#LIVEchat').load('stud_messageLIVECHAT.php', { userUNIQUEid_receiver: receiverId });
+function loadChat(receiverId, name, profilePic) {
+    $('#chatHeader').show().data('receiver-id', receiverId);
+    $('#chatPfp').text(name.charAt(0).toUpperCase());
+    $('#chatName').text(name);
+    loadChatHistory(receiverId);
+    loadDocuments(receiverId);
+}
 
+function loadChatHistory(receiverId) {
+    $.ajax({
+        url: 'load_chat_history.php',
+        method: 'POST',
+        data: { sender_id: <?php echo $coordinatorId; ?>, receiver_id: receiverId },
+        success: function(response) {
+            $('#chatMessages').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading chat history:', error);
+        }
+    });
+}
+
+function sendMessage() {
+    const message = $('#messageInput').val().trim();
+    const receiverId = $('#chatHeader').data('receiver-id');
+    if (message && receiverId) {
+        $.ajax({
+            url: 'send_message.php',
+            method: 'POST',
+            dataType: 'json', // Expect JSON response
+            data: { sender_id: <?php echo $coordinatorId; ?>, receiver_id: receiverId, message: message },
+            success: function(response) {
+                console.log('Response:', response); // Debug the response
+                if (response.status === 'success') {
+                    $('#messageInput').val('');
+                    loadChatHistory(receiverId);
+                } else {
+                    console.error('Send message failed:', response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', error);
+                if (xhr.responseText) {
+                    console.log('Raw response:', xhr.responseText); // Log raw response
+                }
+            }
+        });
+    } else {
+        console.log('Message or receiver ID is missing');
+    }
+}
+
+function loadDocuments(receiverId) {
     $.ajax({
         url: 'load_documents.php',
         method: 'POST',
         data: { receiver_id: receiverId },
         success: function(response) {
-            const files = JSON.parse(response);
-            let imagesHtml = '';
-            let docsHtml = '';
-
-            files.forEach(file => {
-                const date = new Date(file.timestamp).toLocaleString();
-                if (file.file_type.startsWith('image/')) {
-                    imagesHtml += `
-                        <div class="col-6 mb-3">
-                            <div class="thumbnail-container">
-                                <img src="${file.file_path}" class="img-fluid rounded" alt="Shared image">
-                                <small class="file-timestamp d-block">${date}</small>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    docsHtml += `
-                        <div class="document-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-file-${file.file_type === 'application/pdf' ? 'pdf' : 'word'} text-danger"></i>
-                                    <a href="${file.file_path}" download class="ml-2">${file.file_name}</a>
-                                </div>
-                            </div>
-                            <small class="file-timestamp">${date}</small>
-                        </div>
-                    `;
-                }
-            });
-
-            $('#imageContainer').html(imagesHtml || '<p class="text-muted">No images shared</p>');
-            $('#documentContainer').html(docsHtml || '<p class="text-muted">No documents shared</p>');
+            $('#resourcePanel').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading documents:', error);
         }
     });
 }
 
-$(document).ready(function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const receiverId = urlParams.get('userUNIQUEid_receiver');
-    if (receiverId) {
-        loadConversation(receiverId);
+// Handle Enter key press
+$('#messageInput').on('keypress', function(e) {
+    if (e.which === 13) {
+        e.preventDefault();
+        sendMessage();
     }
 });
+
+// Auto-refresh chat
+setInterval(function() {
+    const receiverId = $('#chatHeader').data('receiver-id');
+    if (receiverId) {
+        loadChatHistory(receiverId);
+        loadDocuments(receiverId);
+    }
+}, 5000);
+
+// Search functionality
+$('#searchStudent').on('keyup', function() {
+    const query = $(this).val().toLowerCase();
+    $('#studentList .contacts-indiv').each(function() {
+        const name = $(this).find('.name b').text().toLowerCase();
+        $(this).toggle(name.includes(query));
+    });
+});
 </script>
-    
-</body>
-</html>

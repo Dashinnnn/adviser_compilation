@@ -215,7 +215,7 @@ try {
         .swal2-popup, 
     .swal-custom-popup {
         border-radius: 40px !important;
-        padding: 60px 30px 40px 30px !important;
+        padding: 80px 30px 40px 30px !important;
         background-color: #700000 !important;
         position: relative;
         border: 2px solid rgba(255, 193, 7, 0.3) !important;
@@ -225,7 +225,7 @@ try {
     .swal-custom-icon {
         position: absolute !important;
         left: 50% !important;
-        top: 20px !important;
+        top: 35px !important;
         transform: translate(-50%, -50%) !important;
         margin: 0 !important;
         z-index: 2 !important;
