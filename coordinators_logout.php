@@ -22,6 +22,6 @@ $sql2->execute([$online_offline_status, $coordinators_id]);
 
 session_destroy();
 
-header("Location: index.php");
+header("Location: ../index.php");
 
 ?>

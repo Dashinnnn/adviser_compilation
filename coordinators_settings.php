@@ -6,7 +6,7 @@ session_start();
 
 // Redirect if not authenticated
 if (!isset($_SESSION['auth_user']['coordinators_id']) || $_SESSION['auth_user']['coordinators_id'] == 0) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -19,7 +19,7 @@ try {
     if (!$data) {
         $_SESSION['alert'] = "Error";
         $_SESSION['status'] = "coordinator data not found.";
-        header('Location: index.php');
+        header('Location: ../index.php');
         exit;
     }
 } catch (PDOException $e) {
