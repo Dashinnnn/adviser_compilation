@@ -1,16 +1,9 @@
 <?php
-    include '../connection/config.php';
-
-    error_reporting(E_ALL);
+include '../connection/config.php';
+error_reporting(E_ALL);
 ini_set('display_errors', 1);
-ini_set('log_errors', 1);
-ini_set('error_log', 'C:\xampp\php\logs\php_error_log');
 
-session_start(); 
-if (!isset($_SESSION['auth_user']['coordinators_id']) || $_SESSION['auth_user']['coordinators_id'] == 0) {
-    header('Location: index.php');
-    exit;
-}
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -19,15 +12,16 @@ if (!isset($_SESSION['auth_user']['coordinators_id']) || $_SESSION['auth_user'][
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OJT Web Portal: Find your H.T.E</title>
+    <title>OJT Web Portal: Coordinator Profile</title>
+    <link rel="shortcut icon" href="images/pupLogo.png">
     <link href="css/lib/font-awesome.min.css" rel="stylesheet">
     <link href="css/lib/themify-icons.css" rel="stylesheet">
+    <link href="css/lib/menubar/sidebar.css" rel="stylesheet">
     <link href="css/lib/bootstrap.min.css" rel="stylesheet">
     <link href="css/lib/helper.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/lib/sweetalert/sweetalert.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="endorsement-css/endorsement-moa.css" rel="stylesheet">
     <style>
         .appointment-container {
             max-width: 1200px;
@@ -143,111 +137,52 @@ if (!isset($_SESSION['auth_user']['coordinators_id']) || $_SESSION['auth_user'][
                     </div>
                 </div>
                 <div class="meetings-grid">
-                    <!-- Meeting Card 1 -->
-                    <div class="meeting-card">
-                        <div class="meeting-header">
-                            <img src="images/vid-call.png" alt="" class="meeting-icon">
-                            <span class="meeting-type">Zoom Meeting</span>
-                        </div>
-                        
-                        <div class="meeting-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Link</span>
-                                <span class="detail-value">: <a href="https://us05web.zoom.us/j/89564295461?pwd=zsXcuvESXGIC71rBnuDZTiBcFeVs2.1" class="meeting-link" target="_blank">https://us05web.zoom.us/j/89564295461?pwd=zsXcuvESXGIC71rBnuDZTiBcFeVs2.1</a></span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Passcode</span>
-                                <span class="detail-value">: 8891</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Date</span>
-                                <span class="detail-value">: April 22, 2025</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Time</span>
-                                <span class="detail-value">: 9am - 12nn</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Agenda</span>
-                                <span class="detail-value">: Lorem Ipsum</span>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
+                    $coordinators_id = $_SESSION['auth_user']['coordinators_id'];
+                    $query = "SELECT * FROM meetings WHERE portal IN (:portal1, :portal2)";
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute(['portal1' => 'faculty', 'portal2' => 'all']);
                     
-                    <!-- Meeting Card 2 -->
-                    <div class="meeting-card">
-                        <div class="meeting-header">
-                            <img src="images/vid-call.png" alt="" class="meeting-icon">
-                            <span class="meeting-type">Zoom Meeting</span>
-                        </div>
-                        
-                        <div class="meeting-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Link</span>
-                                <span class="detail-value">: <a href="https://us05web.zoom.us/j/89564295461?pwd=zsXcuvESXGIC71rBnuDZTiBcFeVs2.1" class="meeting-link" target="_blank">https://us05web.zoom.us/j/89564295461?pwd=zsXcuvESXGIC71rBnuDZTiBcFeVs2.1</a></span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Passcode</span>
-                                <span class="detail-value">: 8891</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Date</span>
-                                <span class="detail-value">: April 22, 2025</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Time</span>
-                                <span class="detail-value">: 9am - 12nn</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Agenda</span>
-                                <span class="detail-value">: Lorem Ipsum</span>
-                            </div>
-                        </div>
-                    </div>
+                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     
-                    <!-- Meeting Card 3 -->
-                    <div class="meeting-card">
-                        <div class="meeting-header">
-                            <img src="images/vid-call.png" alt="" class="meeting-icon">
-                            <span class="meeting-type">Zoom Meeting</span>
+                    if (count($results) > 0) {
+                        foreach ($results as $row) {
+                    ?>
+                        <div class="meeting-card">
+                            <div class="meeting-header">
+                                <img src="images/vid-call.png" alt="" class="meeting-icon">
+                                <span class="meeting-type"><?php echo htmlspecialchars($row['meeting_type']); ?></span>
+                            </div>
+                            <div class="meeting-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Link</span>
+                                    <span class="detail-value">: <a href="<?php echo htmlspecialchars($row['link']); ?>" class="meeting-link" target="_blank"><?php echo htmlspecialchars($row['link']); ?></a></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Passcode</span>
+                                    <span class="detail-value">: <?php echo htmlspecialchars($row['passcode']); ?></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Date</span>
+                                    <span class="detail-value">: <?php echo htmlspecialchars(date('F d, Y', strtotime($row['meeting_date']))); ?></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Time</span>
+                                    <span class="detail-value">: <?php echo htmlspecialchars($row['meeting_time']); ?></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Agenda</span>
+                                    <span class="detail-value">: <?php echo htmlspecialchars($row['agenda']); ?></span>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="meeting-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Link</span>
-                                <span class="detail-value">: <a href="https://us05web.zoom.us/j/89564295461?pwd=zsXcuvESXGIC71rBnuDZTiBcFeVs2.1" class="meeting-link" target="_blank">https://us05web.zoom.us/j/89564295461?pwd=zsXcuvESXGIC71rBnuDZTiBcFeVs2.1</a></span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Passcode</span>
-                                <span class="detail-value">: 8891</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Date</span>
-                                <span class="detail-value">: April 22, 2025</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Time</span>
-                                <span class="detail-value">: 9am - 12nn</span>
-                            </div>
-                            
-                            <div class="detail-row">
-                                <span class="detail-label">Agenda</span>
-                                <span class="detail-value">: Lorem Ipsum</span>
-                            </div>
-                            
-                        </div>
-                    </div>
+                    <?php
+                        }
+                    } else {
+                        echo '<p>No meetings found.</p>';
+                    }
+                    $stmt = null; // Close the statement
+                    ?>
                 </div>
             </div>
         </div>

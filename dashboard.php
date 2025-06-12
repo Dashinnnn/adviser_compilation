@@ -17,10 +17,24 @@ if($_SESSION['auth_user']['coordinators_id']==0){
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $first_name = isset($result['first_name']) ? $result['first_name'] : "Guest";
 }
+
+// Fetch Announcements for Faculty or All portals
+$announcement_query = "SELECT title, content, created_at FROM announcements WHERE portal IN ('adviser', 'all') ORDER BY created_at DESC";
+$announcement_stmt = $conn->prepare($announcement_query);
+$announcement_stmt->execute();
+$announcements = $announcement_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch FAQs
+$faq_query = "SELECT question, answer FROM faqs ORDER BY id DESC";
+$faq_stmt = $conn->prepare($faq_query);
+$faq_stmt->execute();
+$faqs = $faq_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = $conn->prepare("SELECT * FROM coordinators_account WHERE id = ?");
+$stmt->execute([$faculty_id]);
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
+
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -133,7 +147,7 @@ require_once 'templates/coordinators_navbar.php';
                                         <div>
                                             <div>Trainee</div>
                                             <?php
-                                            $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+                                            $course_handled = $data['course_handled'];
                 
                                             $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ?");
                                             $stmt->execute([$course_handled]);
@@ -156,7 +170,7 @@ require_once 'templates/coordinators_navbar.php';
                                         <div>
                                             <div>Deployed</div>
                                             <?php
-                                            $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+                                             $course_handled = $data['course_handled'];
                                             $ojt_status = 'Deployed';
                 
                                             $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ?");
@@ -181,7 +195,7 @@ require_once 'templates/coordinators_navbar.php';
                                             <div>Completed</div>
                                             <?php
                                            
-                                            $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+                                             $course_handled = $data['course_handled'];
                                             $ojt_status = 'Completed';
                 
                                             $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ?");
@@ -205,7 +219,7 @@ require_once 'templates/coordinators_navbar.php';
                                         <div>
                                             <div>Dropped</div>
                                             <?php
-                                            $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+                                             $course_handled = $data['course_handled'];
                                             $ojt_status = 'Dropped';
                 
                                             $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ?");
@@ -236,6 +250,51 @@ require_once 'templates/coordinators_navbar.php';
                                 <!-- /# card -->
                             </div>
                             </div>
+                            <br><br>
+                                                <!-- Announcements Section -->
+                    <div class="page-title">
+                        <h1 style="font-size: 16px; color: #700000; margin-left: 5rem;"><b>ANNOUNCEMENTS</b></h1>
+                    </div>
+                    <br><br>
+                    <div style="max-width: 62.5rem; margin: 0 auto; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 80px;">
+                        <?php if (!empty($announcements)): ?>
+                            <?php foreach ($announcements as $announcement): ?>
+                                <div class="deadline-container">
+                                    <div class="header">
+                                        <?php echo htmlspecialchars($announcement['title']); ?>
+                                    </div>
+                                    <div class="deadline-content">
+                                        <?php echo htmlspecialchars($announcement['content']); ?>
+                                        <div style="font-size: 14px; color: #555; margin-top: 10px;">
+                                            <?php echo htmlspecialchars(date('F d, Y, H:i', strtotime($announcement['created_at']))); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div style="text-align: center; color: #700000;">No announcements available at this time.</div>
+                        <?php endif; ?>
+                    </div>
+                    <br><br>
+                    <!-- FAQs Section -->
+                    <div class="page-title" style="display: flex; align-items: center; margin-left: 5rem;">
+                        <img src="../student/images/faqs.png" alt="faqs" style="margin-right: 10px;">
+                        <h1 style="font-size: 16px; color: #700000; margin: 0;"><b>FAQs</b></h1>
+                    </div>
+                    <div class="faq-container">
+                        <?php if (!empty($faqs)): ?>
+                            <?php foreach ($faqs as $faq): ?>
+                                <div class="faq-item">
+                                    <div class="faq-header"><?php echo htmlspecialchars($faq['question']); ?><span>v</span></div>
+                                    <div class="faq-content">
+                                        <?php echo htmlspecialchars($faq['answer']); ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div style="text-align: center; color: #700000;">No FAQs available at this time.</div>
+                        <?php endif; ?>
+                    </div>
                 </section>
             </div>
         </div>
@@ -258,15 +317,12 @@ require_once 'templates/coordinators_navbar.php';
     <!-- <script src="js/lib/chart-js/chartjs-init.js"></script> -->
 
     <!-- scripit init-->
-    <script src="js/dashboard2.js"></script>
-
-    
-    <script src="js/lib/sweetalert/sweetalert.min.js"></script>
-    <script src="js/lib/sweetalert/sweetalert.init.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/customAlert.js"></script>
 
 
     <?php
-$course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+$course_handled = $data['course_handled'];
 $stmt = $conn->prepare("SELECT stud_section, COUNT(*) as count FROM students_data WHERE stud_course = ? GROUP BY stud_section");
 $stmt->execute([$course_handled]);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -323,7 +379,7 @@ $section_counts = $rows ? array_column($rows, 'count') : [];
 	} );
 
     <?php
-    $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+    $course_handled = $data['course_handled'];
 
     $stmt = $conn->prepare("SELECT week, AVG(job_knowledge) as job_knowledgeAVG, AVG(dependability) as dependabilityAVG,
     AVG(communication_skills) as communication_skillsAVG, AVG(conduct) as conductAVG, AVG(initiative_and_creativity) as initiative_and_creativityAVG, 
@@ -457,7 +513,7 @@ $section_counts = $rows ? array_column($rows, 'count') : [];
 });
 
     <?php
-    $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+    $course_handled = $data['course_handled'];
 
     $stmt = $conn->prepare("SELECT AVG(total_points) as total_pointsAVG FROM stud_evaluation
     LEFT JOIN students_data ON students_data.id = stud_evaluation.stud_id WHERE students_data.stud_course = ?");
@@ -504,7 +560,7 @@ $section_counts = $rows ? array_column($rows, 'count') : [];
 
 
     <?php
-    $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+    $course_handled = $data['course_handled'];
 
     $stmt = $conn->prepare("SELECT total_points FROM stud_evaluation
         LEFT JOIN students_data ON students_data.id = stud_evaluation.stud_id WHERE students_data.stud_course = ?");
@@ -553,7 +609,7 @@ var labels = <?= json_encode($labels) ?>;
 
 
     <?php
-    $course_handled = $_SESSION['auth_user']['coordinator_courseHANDLED'];
+    $course_handled = $data['course_handled'];
     $task_status = 'Finished';
 
     $stmt = $conn->prepare("SELECT COUNT(task_status) AS finished_tasks FROM stud_task_list

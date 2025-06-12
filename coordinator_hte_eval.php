@@ -97,7 +97,7 @@ if (isset($_GET['export']) && in_array($_GET['export'], ['excel', 'csv', 'pdf'])
             $row++;
         }
 
-        $filename = "Trainees_Section_{$section}.xlsx";
+        $filename = "List_of_HTE_Eval_Section_{$section}.xlsx";
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -107,7 +107,7 @@ if (isset($_GET['export']) && in_array($_GET['export'], ['excel', 'csv', 'pdf'])
     }
 
     if ($_GET['export'] == 'csv') {
-        $filename = "Trainees_Section_{$section}.csv";
+        $filename = "List_of_HTE_Eval_Section_{$section}.csv";
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -134,7 +134,7 @@ if (isset($_GET['export']) && in_array($_GET['export'], ['excel', 'csv', 'pdf'])
 
         $pdf->SetCreator('OJT Web Portal');
         $pdf->SetAuthor('Coordinator');
-        $pdf->SetTitle("Trainees Section {$section}");
+        $pdf->SetTitle("HTE Evaluation Section {$section}");
         $pdf->SetSubject('Trainee Data');
 
         $pdf->setPrintHeader(false);
@@ -175,7 +175,7 @@ if (isset($_GET['export']) && in_array($_GET['export'], ['excel', 'csv', 'pdf'])
 
         $pdf->writeHTML($html, true, false, true, false, '');
 
-        $filename = "Trainees_Section_{$section}.pdf";
+        $filename = "List_of_HTE_Eval_Section_{$section}.pdf";
         $pdf->Output($filename, 'D');
         exit;
     }
