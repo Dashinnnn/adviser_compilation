@@ -148,11 +148,27 @@ require_once 'templates/coordinators_navbar.php';
                                             <div>Trainee</div>
                                             <?php
                                             $course_handled = $data['course_handled'];
-                
-                                            $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ?");
-                                            $stmt->execute([$course_handled]);
+                                            $first_section = $data['assigned_section'];
+                                            $second_section = $data['second_assigned_section'];
                                             
-                                            $count = $stmt->fetchColumn(); 
+                                            try {
+                                                $query = "SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND (stud_section = ?";
+                                                $params = [$course_handled, $first_section];
+
+                                                if(!empty($second_section)) {
+                                                    $query .= " OR stud_section = ?)";
+                                                    $params[] = $second_section;
+                                                } else {
+                                                    $query .= ")";
+                                                }
+
+                                                $stmt = $conn->prepare($query);
+                                                $stmt->execute($params);
+                                                $count = $stmt->fetchColumn();
+                                            } catch (PDOException $e) {
+                                                $count = 0;
+                                                echo "Error: " . $e->getMessage();
+                                            }
                                             ?>
 
                                             <div class="stat"><?php echo $count; ?></div>
@@ -165,20 +181,35 @@ require_once 'templates/coordinators_navbar.php';
                                 <div>
                                     <div class="dashboard-content">
                                         <div>
-                                            <img src="images/user.png" alt="Deplyoed icon">
+                                            <img src="images/user.png" alt="Deployed icon">
                                         </div>
                                         <div>
                                             <div>Deployed</div>
                                             <?php
-                                             $course_handled = $data['course_handled'];
+                                            $course_handled = isset($data['course_handled']) ? $data['course_handled'] : '';
+                                            $first_section = isset($data['assigned_section']) ? $data['assigned_section'] : '';
+                                            $second_section = isset($data['second_assigned_section']) ? $data['second_assigned_section'] : '';
                                             $ojt_status = 'Deployed';
-                
-                                            $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ?");
-                                            $stmt->execute([$course_handled, $ojt_status]);
+
+                                            try {
+                                                $query = "SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ? AND (stud_section = ?";
+                                                $params = [$course_handled, $ojt_status, $first_section];
                                             
-                                            $count = $stmt->fetchColumn(); // Fetch the count
+                                                if (!empty($second_section)) {
+                                                    $query .= " OR stud_section = ?)";
+                                                    $params[] = $second_section;
+                                                } else {
+                                                    $query .= ")";
+                                                }
+                                            
+                                                $stmt = $conn->prepare($query);
+                                                $stmt->execute($params);
+                                                $count = $stmt->fetchColumn();
+                                            } catch (PDOException $e) {
+                                                $count = 0;
+                                                                        echo "Error: " . $e->getMessage();
+                                            }
                                             ?>
-                                            
                                             <div class="stat"><?php echo $count; ?></div>
                                         </div>
                                     </div>
@@ -187,24 +218,40 @@ require_once 'templates/coordinators_navbar.php';
 
                             <div>
                                 <div>
-                                    <div class="dashboard-content">
-                                        <div>
-                                            <img src="images/user.png" alt="Completed icon">
-                                        </div>
-                                        <div>
-                                            <div>Completed</div>
-                                            <?php
-                                           
-                                             $course_handled = $data['course_handled'];
-                                            $ojt_status = 'Completed';
-                
-                                            $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ?");
-                                            $stmt->execute([$course_handled, $ojt_status]);
-                                            
-                                            $count = $stmt->fetchColumn(); // Fetch the count
-                                            ?>
+                                    <div>
+                                        <div class="dashboard-content">
+                                            <div>
+                                                <img src="images/user.png" alt="Completed icon">
+                                            </div>
+                                            <div>
+                                                <div>Completed</div>
+                                                <?php
+                                                $course_handled = isset($data['course_handled']) ? $data['course_handled'] : '';
+                                                $first_section = isset($data['assigned_section']) ? $data['assigned_section'] : '';
+                                                $second_section = isset($data['second_assigned_section']) ? $data['second_assigned_section'] : '';
+                                                $ojt_status = 'Completed';
 
-                                           <div class="stat"><?php echo $count; ?></div>
+                                                try {
+                                                    $query = "SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ? AND (stud_section = ?";
+                                                    $params = [$course_handled, $ojt_status, $first_section];
+                                                
+                                                    if (!empty($second_section)) {
+                                                        $query .= " OR stud_section = ?)";
+                                                        $params[] = $second_section;
+                                                    } else {
+                                                        $query .= ")";
+                                                    }
+                                                
+                                                    $stmt = $conn->prepare($query);
+                                                    $stmt->execute($params);
+                                                    $count = $stmt->fetchColumn();
+                                                } catch (PDOException $e) {
+                                                    $count = 0;
+                                                    echo "Error: " . $e->getMessage();
+                                                }
+                                                ?>
+                                                <div class="stat"><?php echo $count; ?></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -212,23 +259,40 @@ require_once 'templates/coordinators_navbar.php';
 
                             <div>
                                 <div>
-                                    <div class="dashboard-content">
-                                        <div>
-                                            <img src="images/user.png" alt="Dropped icon">
-                                        </div>
-                                        <div>
-                                            <div>Dropped</div>
-                                            <?php
-                                             $course_handled = $data['course_handled'];
-                                            $ojt_status = 'Dropped';
-                
-                                            $stmt = $conn->prepare("SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ?");
-                                            $stmt->execute([$course_handled, $ojt_status]);
-                                            
-                                            $count = $stmt->fetchColumn(); // Fetch the count
-                                            ?>
+                                    <div>
+                                        <div class="dashboard-content">
+                                            <div>
+                                                <img src="images/user.png" alt="Completed icon">
+                                            </div>
+                                            <div>
+                                                <div>Dropped</div>
+                                                <?php
+                                                $course_handled = isset($data['course_handled']) ? $data['course_handled'] : '';
+                                                $first_section = isset($data['assigned_section']) ? $data['assigned_section'] : '';
+                                                $second_section = isset($data['second_assigned_section']) ? $data['second_assigned_section'] : '';
+                                                $ojt_status = 'Dropped';
 
-                                            <div class="stat"><?php echo $count; ?></div>
+                                                try {
+                                                    $query = "SELECT COUNT(*) FROM students_data WHERE stud_course = ? AND ojt_status = ? AND (stud_section = ?";
+                                                    $params = [$course_handled, $ojt_status, $first_section];
+
+                                                    if (!empty($second_section)) {
+                                                        $query .= " OR stud_section = ?)";
+                                                        $params[] = $second_section;
+                                                    } else {
+                                                        $query .= ")";
+                                                    }
+
+                                                    $stmt = $conn->prepare($query);
+                                                    $stmt->execute($params);
+                                                    $count = $stmt->fetchColumn();
+                                                } catch (PDOException $e) {
+                                                    $count = 0;
+                                                    echo "Error: " . $e->getMessage();
+                                                }
+                                                ?>
+                                                <div class="stat"><?php echo $count; ?></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
